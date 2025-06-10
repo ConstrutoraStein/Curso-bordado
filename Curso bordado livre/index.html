@@ -208,16 +208,18 @@
 
         return `
             <div id="view-inicio">
-                <header class="text-center py-12 px-4"><h1 class="text-4xl md:text-5xl font-bold main-title reveal">Bem-vinda ao Curso de Bordado Livre</h1><p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600 reveal">Sua jornada para criar arte com agulha e linha começa aqui.</p><div class="mt-4 text-center font-semibold text-pink-500 reveal"><p>Pix oficial: 47 99609-8547</p></div></header>
+                <header class="text-center py-12 px-4">
+                    <h1 class="text-4xl md:text-5xl font-bold main-title reveal">Bem-vinda ao Curso de Bordado Livre</h1>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600 reveal">Sua jornada para criar arte com agulha e linha começa aqui.</p>
+                    <div class="mt-6 bg-pink-100 border-2 border-pink-300 rounded-2xl p-4 max-w-sm mx-auto reveal">
+                        <p class="font-bold text-pink-600 text-lg">Pix Oficial para Pagamento</p>
+                        <p class="font-mono text-pink-800 text-xl tracking-wider mt-1">47 99609-8547</p>
+                    </div>
+                </header>
                 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 my-8 reveal"><h2 class="text-2xl font-bold text-center mb-4 text-purple-700">Progresso do Curso</h2><div class="progress-card bg-white !p-4"><div class="flex justify-between items-center mb-1"><span class="text-sm font-medium text-slate-600">Progresso Total</span><span class="text-sm font-bold text-purple-600">${overallPercentage}%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${overallPercentage}%;"></div></div></div></div>
-                <main class="container mx-auto px-4 py-8">
-                    <section id="modulos">
-                        <h2 class="text-3xl font-bold text-center mb-10 text-purple-700 reveal">Módulos do Curso</h2>
-                        <div class="grid md:grid-cols-2 gap-8">${modulesHtml}</div>
-                    </section>
-                    
+                <main class="container mx-auto px-4 py-8"><section id="modulos"><h2 class="text-3xl font-bold text-center mb-10 text-purple-700 reveal">Módulos do Curso</h2><div class="grid md:grid-cols-2 gap-8">${modulesHtml}</div></section>
                     <section id="whatsapp-group" class="mt-12 reveal">
-                        <a href="https://chat.whatsapp.com/SEU_LINK_AQUI" target="_blank" class="block whatsapp-card p-6 rounded-2xl shadow-lg flex items-center animated-card no-underline">
+                        <a href="https://chat.whatsapp.com/GveOkH7nn7ZAsACruEgZZh" target="_blank" class="block whatsapp-card p-6 rounded-2xl shadow-lg flex items-center animated-card no-underline">
                             <i class="fab fa-whatsapp text-5xl mr-5"></i>
                             <div>
                                 <h3 class="font-bold text-2xl">Entre no nosso grupo do WhatsApp</h3>
@@ -226,7 +228,6 @@
                             <i class="fa-solid fa-chevron-right text-2xl ml-auto"></i>
                         </a>
                     </section>
-
                     <section class="bonus-section mt-20 py-20 reveal"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-16 bonus-headline"><i class="fa-solid fa-gift mr-3"></i>Bônus Exclusivos</h2><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                         <div class="bonus-card p-6 text-center flex flex-col justify-between">
                             <i class="icon fa-solid fa-sack-dollar text-green-500 mx-auto mb-5"></i><h3 class="font-bold text-lg mb-4 text-gray-800">Como Vender e Lucrar</h3>
