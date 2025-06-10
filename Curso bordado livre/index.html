@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Area de Membro - Curso de Bordado Livre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="bordado livre.png" type="image/x-icon">
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdf2f8; /* Fundo rosa bem claro */
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+        
+        /* Estilos Gerais */
+        .main-title { background: linear-gradient(to right, #8A2BE2, #FF1493); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-purple { background-color: #9333ea; color: white; transition: all 0.3s ease; }
+        .btn-purple:hover { background-color: #7e22ce; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(147, 51, 234, 0.4); }
+        .animated-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .animated-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* Menu Mobile */
+        .mobile-nav {
+            position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); width: calc(100% - 2rem); max-width: 400px;
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,0,0,0.05); border-radius: 9999px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem; z-index: 1000; display: flex;
+        }
+        .nav-link {
+            cursor: pointer; display: flex; flex-direction: column; align-items: center; color: #4b5563;
+            font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.5rem; transition: all 0.3s ease;
+            border-radius: 9999px; flex-grow: 1; text-decoration: none;
+        }
+        .nav-link i { font-size: 1.25rem; margin-bottom: 0.125rem; }
+        .nav-link.active { color: #c026d3; background-color: rgba(233, 213, 255, 0.7); }
+        @media (min-width: 768px) { .mobile-nav { display: none; } }
+
+        /* Estilos das Páginas Dinâmicas */
+        .page-bg { background-color: #fdf2f8; }
+        .progress-card, .lesson-card, .module-lessons-list a { background-color: white; border-radius: 1.5rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .progress-card, .lesson-card { padding: 1.5rem; }
+        .progress-bar-bg { background-color: #e5e7eb; border-radius: 9999px; overflow: hidden; height: 0.75rem; }
+        .progress-bar-fill { background: linear-gradient(to right, #a855f7, #d946ef); height: 100%; transition: width 0.5s ease; }
+        
+        .lesson-checkbox { appearance: none; width: 1.5rem; height: 1.5rem; border: 2px solid #cbd5e1; border-radius: 0.5rem; cursor: pointer; position: relative; transition: all 0.2s ease; }
+        .lesson-checkbox:checked { background-color: #9333ea; border-color: #9333ea; }
+        .lesson-checkbox:checked::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: white; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 0.8rem; }
+        
+        /* Página de Vídeo e PDF */
+        .video-player-container { position: relative; width: 100%; overflow: hidden; padding-top: 56.25%; border-radius: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .video-player-container iframe { position: absolute; top: 0; left: 0; bottom: 0; right: 0; width: 100%; height: 100%; border: none; }
+        .video-nav-button { background-color: #f3f4f6; color: #4b5563; padding: 0.75rem 1rem; border-radius: 0.75rem; font-weight: 600; transition: all 0.2s ease; }
+        .video-nav-button:hover:not(:disabled) { background-color: #e5e7eb; }
+        .video-nav-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-completed { background-color: #16a34a; color: white; transition: all 0.3s ease; }
+        .module-lessons-list a { display: flex; justify-content: space-between; align-items: center; padding: 1rem; margin-bottom: 0.75rem; transition: all 0.2s ease; text-decoration: none;}
+        .module-lessons-list a:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .module-lessons-list a.active-lesson { background-color: #f3e8ff; border: 2px solid #c084fc; }
+
+        /* Gradientes e Seção Bônus */
+        .gradient-bg-1 { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); }
+        .gradient-bg-2 { background: linear-gradient(135deg, #ecfdf5, #d1fae5); }
+        .gradient-bg-3 { background: linear-gradient(135deg, #fff1f2, #fecdd3); }
+        .gradient-bg-4 { background: linear-gradient(135deg, #ecfeff, #cffafe); }
+        .gradient-bg-5 { background: linear-gradient(135deg, #fefce8, #fef3c7); }
+        .gradient-bg-6 { background: linear-gradient(135deg, #eef2ff, #e0e7ff); }
+        .gradient-bg-7 { background: linear-gradient(135deg, #fae8ff, #f5d0fe); }
+        .gradient-bg-8 { background: linear-gradient(135deg, #f0fdfa, #ccfbf1); }
+        .gradient-bg-9 { background: linear-gradient(135deg, #fef9c3, #fef08a); }
+        .whatsapp-card { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+        .btn-whatsapp { background-color: #f8fafc; color: #128C7E; }
+        .bonus-section { background-color: #4c1d95; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239333ea' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        .bonus-headline { color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(236, 72, 153, 0.7); }
+        .bonus-card { background-color: #fff; border-radius: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s ease, box-shadow 0.3s ease; border: 2px solid transparent; }
+        .bonus-card:hover { transform: translateY(-12px) scale(1.03); box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 25px rgba(236, 72, 153, 0.5); border-color: #f9a8d4; }
+        .bonus-card .icon { font-size: 3rem; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .bonus-card:hover .icon { transform: scale(1.15) rotate(-8deg); }
+    </style>
+</head>
+<body class="pb-24 md:pb-0">
+
+    <div id="app-container"></div>
+
+    <nav class="mobile-nav">
+        <a onclick="showView('inicio')" class="nav-link"><i class="fa-solid fa-house"></i><span>Início</span></a>
+        <a onclick="showView('modulos')" class="nav-link"><i class="fa-solid fa-layer-group"></i><span>Módulos</span></a>
+        <a onclick="showView('progresso')" class="nav-link"><i class="fa-solid fa-chart-line"></i><span>Progresso</span></a>
+    </nav>
+
+    <script>
+    // =================================================================
+    // BANCO DE DADOS E ESTADO DO CURSO
+    // =================================================================
+    let courseData;
+
+    const initialCourseData = [
+        { id: 'intro', title: 'Introdução para a Prática', icon: 'fa-solid fa-seedling', gradientClass: 'gradient-bg-1', lessons: [ { id: 1, title: 'Introdução ao Bordado Livre', duration: '2 min', videoId: 'EgRV13mqryc', completed: false }, { id: 2, title: 'Uso do Bordado Livre', duration: '5 min', videoId: '6c5ynsfTTkc', completed: false }, { id: 3, title: 'Materiais e Onde Encontrá-los', duration: '6 min', videoId: 'gwtLDmI9jGg', completed: false }, { id: 4, title: 'Riscos e Onde Encontrá-los', duration: '3 min', videoId: '_UydmR83q6Y', completed: false }, { id: 5, title: 'Como Passar o Risco', duration: '4 min', videoId: 'whoDqcJ87WE', completed: false } ] },
+        { id: 'pontos', title: 'Guia de Pontos', icon: 'fa-solid fa-book-open', gradientClass: 'gradient-bg-2', lessons: [ { id: 1, title: 'Ponto Haste', duration: '8 min', videoId: '9QoYpdEAXQI', completed: false }, { id: 2, title: 'Ponto Atrás', duration: '5 min', videoId: '0UKIXf2F41o', completed: false }, { id: 3, title: 'Ponto Partido', duration: '11 min', videoId: 'H_ZddHDMEAw', completed: false }, { id: 4, title: 'Ponto Chaveado', duration: '7 min', videoId: 'bW1GN6swyuw', completed: false }, { id: 5, title: 'Ponto Nó Francês', duration: '10 min', videoId: '6rFlXEaSi3Y', completed: false }, { id: 6, title: 'Ponto Cheio', duration: '10 min', videoId: 'T70dEPH_B9g', completed: false }, { id: 7, title: 'Ponto Pirulito', duration: '7 min', videoId: 'lS2FJ6eawhU', completed: false }, { id: 8, title: 'Pintura de Agulha', duration: '5 min', videoId: 'FVZ1ocoRVFQ', completed: false } ] },
+        { id: 'diferenciados', title: 'Pontos Diferenciados', icon: 'fa-solid fa-star', gradientClass: 'gradient-bg-3', lessons: [ { id: 1, title: 'Ponto Coração', duration: '10 min', videoId: 'r4Qw_8fX-PQ', completed: false }, { id: 2, title: 'Ponto Folha', duration: '7 min', videoId: 'Gcoc4B6hnTU', completed: false }, { id: 3, title: 'Ponto Rosa', duration: '8 min', videoId: 'nAmRIVdE32M', completed: false }, { id: 4, title: 'Ponto Margarida', duration: '4 min', videoId: '3QVoqBE-Wls', completed: false } ] },
+        { id: 'aplicacao', title: 'Aplicação dos Pontos nos Bordados', icon: 'fa-solid fa-wand-magic-sparkles', gradientClass: 'gradient-bg-4', lessons: [ { id: 1, title: 'Aplicação do Ponto Chaveado', duration: '28 min', videoId: 'r9u5n5c_3js', completed: false }, { id: 2, title: 'Aplicação do Ponto Pirulito', duration: '8 min', videoId: 'k6ps8-WeqiA', completed: false }, { id: 3, title: 'Aplicando Nó Francês', duration: '23 min', videoId: '6WkiXbNgyEE', completed: false }, { id: 4, title: 'Aplicando Ponto Cheio', duration: '21 min', videoId: '4gIEJYGxaXQ', completed: false }, { id: 5, title: 'Aplicando Ponto Partido', duration: '36 min', videoId: 'ICzemOjkIyo', completed: false } ] },
+        { id: 'desfecho', title: 'Adaptação e Desfecho', icon: 'fa-solid fa-scissors', gradientClass: 'gradient-bg-5', lessons: [ { id: 1, title: 'Harmonia das Cores (Tem PDF)', duration: '2 min', videoId: 'J1TjTEvp3Ig', completed: false }, { id: 2, title: 'Técnicas de Aquarela', duration: '12 min', videoId: 'b5m5zNzd5do', completed: false }, { id: 3, title: 'Treino Livre', duration: '14 min', videoId: 'wH83ufm8lAw', completed: false }, { id: 4, title: 'Finalização no Bastidor', duration: '24 min', videoId: 'bErkSeCR_xs', completed: false }, { id: 5, title: 'Como Calcular o Valor do Bordado (Tem PDF)', duration: '4 min', videoId: '-w_Rrc_9Ay4', completed: false } ] },
+        { id: 'bastidores', title: 'Guia de Bastidores em 3 Tamanhos', icon: 'fa-solid fa-circle-nodes', gradientClass: 'gradient-bg-6', type: 'pdf', pdfUrl: 'https://www.dropbox.com/scl/fi/m8x4317ob8ekvngbx6nfp/Tamanhos-de-bastidor.pdf.pdf?rlkey=julmgi1i16uqug4qny063fpew&e=2&st=g00c3bqx&dl=0', completed: false },
+        { id: 'cores', title: 'Presente: Guia de Cores', icon: 'fa-solid fa-palette', gradientClass: 'gradient-bg-7', type: 'pdf', pdfUrl: 'https://www.dropbox.com/scl/fi/g9ywd8uum58rx2ylgdxwk/Guia-de-Cores-.pdf.pdf?rlkey=q1bf3u2tjbm4bt4576wtczu3o&e=2&st=a44u5e9w&dl=0', completed: false },
+        { id: 'criatividade', title: 'Guia Prático para Criatividade', icon: 'fa-solid fa-lightbulb', gradientClass: 'gradient-bg-8', type: 'pdf', pdfUrl: 'https://www.dropbox.com/scl/fi/xfs6s3jyhwqyzc5j41rqu/Guia-Pratico-para-Criatividade.pdf?rlkey=htg3axd1p4e4snyylhgzj9q3c&dl=1', completed: false },
+        { 
+            id: 'riscos', title: '1.800 Riscos para Bordado Livre', icon: 'fa-solid fa-file-zipper', gradientClass: 'gradient-bg-9', 
+            lessons: [
+                { id: 1, title: 'RISCOS INFANTIS', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/i4cyuv3e86lgmxrclp8d6/Riscos-Infantis.pdf?rlkey=fqr19lf1gqwdlok0himimh15l&e=2&st=6gfnjwc2&dl=0', completed: false },
+                { id: 2, title: 'RISCOS DE FLORES', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/f7jx1xoa6y99rxwxfl1qk/Riscos-Flores.pdf?rlkey=escrd02gz3f8rp03indrykar5&e=2&st=r0jfu554&dl=0', completed: false },
+                { id: 3, title: 'RISCOS DE ANIMAIS', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/g64kpfanc45lretlij1us/Riscos-Animais-2.pdf?rlkey=tmbfp4m4vxjzhcveb5fi2reew&e=2&st=lxwj2ing&dl=0', completed: false },
+                { id: 4, title: 'RISCOS DE MANDALAS', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/plzc1n0ugre91ocw8hn51/Riscos-Mandalas.pdf?rlkey=8cudb1v2jynnycs5jcw92xxlq&e=2&st=u5puli9s&dl=0', completed: false },
+                { id: 5, title: 'RISCOS MÃOS', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/0hvqxwysj1o2d4y5sutsh/Riscos-M-os.pdf?rlkey=sja61teuloq59s2rs37nvdnw9&e=2&st=01amx92n&dl=0', completed: false },
+                { id: 6, title: 'RISCOS MULHERES', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/gcukpxwl6kl8grnditp5a/Riscos-Mulheres.pdf?rlkey=suvml5ffema2sbthb0konry3d&e=2&st=yut6cdhj&dl=0', completed: false },
+                { id: 7, title: 'RISCOS PAISAGENS', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/8a4akmpuaz2eayx362rfh/Riscos-Paisangens.pdf?rlkey=8d2lpvb0at9l4o97hyh1jife1&e=2&st=b2a5sqpx&dl=0', completed: false },
+                { id: 8, title: 'RISCOS RELIGIÃO', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/sfh84y0cvs5iz41v1rx30/Riscos-religi-o.pdf?rlkey=otzy57pywabwlkgjcy5qd1i1f&e=2&st=xfnpn8fw&dl=0', completed: false },
+                { id: 9, title: 'RISCOS SIGNOS', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/k8i9mgavl664hjrl9v0ts/Riscos-Signos.pdf?rlkey=gf8k6hrq62kvzoiu4av2p3w8j&e=2&st=ps4mt7vu&dl=0', completed: false },
+                { id: 10, title: 'RISCOS VARIADOS', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/jlc6trs2oykjss8kjhpd1/Riscos-Variados.pdf?rlkey=42eav46x9f1g1jl12vct9v9vb&e=2&st=60hbiuuq&dl=0', completed: false },
+                { id: 11, title: 'RISCOS ALFABETO', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/xzjm9crggk0xvwch02pcp/Riscos-Alfabeto.pdf?rlkey=lfsaczfc40l1vd2x3ha7lvshm&e=2&st=ateccp0u&dl=0', completed: false },
+                { id: 12, title: 'RISCOS AMOR', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/sd2ui1z76s2h104v5frag/Riscos-Amor.pdf?rlkey=eqk193lvm1ddhpkw4wgffolio&e=2&st=n3xxft4d&dl=0', completed: false },
+                { id: 13, title: 'RISCOS COMIDAS', type: 'pdf_item', pdfUrl: 'https://www.dropbox.com/scl/fi/p3z6gkodhml6dk6zspoh6/Riscos-Comidas.pdf?rlkey=60pvj8humumkuq9b7zwj9dc9j&e=2&st=y19debwg&dl=0', completed: false },
+            ] 
+        },
+    ];
+    
+    // =================================================================
+    // LÓGICA DE CONTROLE
+    // =================================================================
+    
+    function updateProgress() {
+        courseData.forEach(module => {
+            if (module.type === 'pdf') {
+                module.percentage = module.completed ? 100 : 0;
+                module.status = module.completed ? 'Concluído' : 'Não Iniciado';
+            } else {
+                const completedLessons = module.lessons.filter(l => l.completed).length;
+                module.percentage = module.lessons.length > 0 ? Math.round((completedLessons / module.lessons.length) * 100) : 0;
+                if (module.percentage === 100) module.status = 'Concluído';
+                else if (module.percentage > 0) module.status = 'Em Andamento';
+                else module.status = 'Não Iniciado';
+            }
+        });
+    }
+
+    function toggleLessonStatus(moduleId, lessonId) {
+        const module = courseData.find(m => m.id === moduleId);
+        const lesson = module.lessons.find(l => l.id === lessonId);
+        if (lesson) {
+            lesson.completed = !lesson.completed;
+            localStorage.setItem('courseProgressV6', JSON.stringify(courseData));
+            updateProgress();
+            const currentView = appContainer.children[0].id.replace('view-', '');
+            if (currentView === 'video') showView('video', moduleId, lessonId);
+            else showView(currentView, moduleId);
+        }
+    }
+    
+    function togglePdfModuleStatus(moduleId) {
+        const module = courseData.find(m => m.id === moduleId);
+        if (module && module.type === 'pdf') {
+            module.completed = !module.completed;
+            localStorage.setItem('courseProgressV6', JSON.stringify(courseData));
+            updateProgress();
+            showView('pdf', moduleId);
+        }
+    }
+
+    // =================================================================
+    // RENDERIZAÇÃO DAS VIEWS
+    // =================================================================
+    const appContainer = document.getElementById('app-container');
+
+    function renderInicioView() {
+        let totalItems = 0;
+        let completedItems = 0;
+        courseData.forEach(m => {
+            if (m.type === 'pdf') {
+                totalItems++;
+                if (m.completed) completedItems++;
+            } else {
+                totalItems += m.lessons.length;
+                completedItems += m.lessons.filter(l => l.completed).length;
+            }
+        });
+        const overallPercentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+
+        const modulesHtml = courseData.map(module => {
+            const buttonText = module.type === 'pdf' ? 'Ver Material' : 'Ver Aulas';
+            const buttonIcon = module.type === 'pdf' ? 'fa-solid fa-file-arrow-down' : 'fa-solid fa-list-check';
+            const action = `showView('${module.type === 'pdf' ? 'pdf' : 'aulas'}', '${module.id}')`;
+            const lessonText = module.type === 'pdf' ? '1 Material' : `${module.lessons.length} aulas`;
+
+            return `<div class="relative ${module.gradientClass} p-6 rounded-2xl shadow-lg flex flex-col animated-card reveal">
+                        <div class="flex items-center mb-3">
+                            <i class="${module.icon} text-3xl text-purple-600 mr-4"></i>
+                            <div><h3 class="font-bold text-xl">${module.title}</h3><p class="text-sm text-purple-800">${lessonText}</p></div>
+                        </div>
+                        <p class="flex-grow mb-4 text-gray-700">Explore este módulo para aprimorar suas habilidades.</p>
+                        <button onclick="${action}" class="btn-purple font-bold py-2 px-4 rounded-lg w-full mt-auto"><i class="${buttonIcon} mr-2"></i>${buttonText}</button>
+                    </div>`;
+        }).join('');
+
+        return `
+            <div id="view-inicio">
+                <header class="text-center py-12 px-4"><h1 class="text-4xl md:text-5xl font-bold main-title reveal">Bem-vinda ao Curso de Bordado Livre</h1><p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600 reveal">Sua jornada para criar arte com agulha e linha começa aqui.</p><div class="mt-4 text-center font-semibold text-pink-500 reveal"><p>Pix oficial: 47 99609-8547</p></div></header>
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 my-8 reveal"><h2 class="text-2xl font-bold text-center mb-4 text-purple-700">Progresso do Curso</h2><div class="progress-card bg-white !p-4"><div class="flex justify-between items-center mb-1"><span class="text-sm font-medium text-slate-600">Progresso Total</span><span class="text-sm font-bold text-purple-600">${overallPercentage}%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${overallPercentage}%;"></div></div></div></div>
+                <main class="container mx-auto px-4 py-8">
+                    <section id="modulos">
+                        <h2 class="text-3xl font-bold text-center mb-10 text-purple-700 reveal">Módulos do Curso</h2>
+                        <div class="grid md:grid-cols-2 gap-8">${modulesHtml}</div>
+                    </section>
+                    
+                    <section id="whatsapp-group" class="mt-12 reveal">
+                        <a href="https://chat.whatsapp.com/SEU_LINK_AQUI" target="_blank" class="block whatsapp-card p-6 rounded-2xl shadow-lg flex items-center animated-card no-underline">
+                            <i class="fab fa-whatsapp text-5xl mr-5"></i>
+                            <div>
+                                <h3 class="font-bold text-2xl">Entre no nosso grupo do WhatsApp</h3>
+                                <p class="opacity-90 mt-1">Tire dúvidas, compartilhe seus trabalhos e conecte-se com outras bordadeiras!</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-2xl ml-auto"></i>
+                        </a>
+                    </section>
+
+                    <section class="bonus-section mt-20 py-20 reveal"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-16 bonus-headline"><i class="fa-solid fa-gift mr-3"></i>Bônus Exclusivos</h2><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div class="bonus-card p-6 text-center flex flex-col justify-between">
+                            <i class="icon fa-solid fa-sack-dollar text-green-500 mx-auto mb-5"></i><h3 class="font-bold text-lg mb-4 text-gray-800">Como Vender e Lucrar</h3>
+                            <a href="https://www.dropbox.com/scl/fi/i4tc1ejvio0jg1uwa604i/B-nus-1-Como-Vender-e-Lucrar-com-Artesanato.pdf.pdf?rlkey=j3l09m2h9y8zj9f9yju96i25q&e=2&st=50127w80&dl=0" target="_blank" class="mt-auto bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg no-underline"><i class="fa-solid fa-download mr-2"></i>Baixar</a>
+                        </div>
+                        <div class="bonus-card p-6 text-center flex flex-col justify-between">
+                            <i class="icon fa-solid fa-calculator text-blue-500 mx-auto mb-5"></i><h3 class="font-bold text-lg mb-4 text-gray-800">Guia de Precificação</h3>
+                            <a href="https://www.dropbox.com/scl/fi/i816dld3hmpnouymokdk9/como-calcular-o-pre-o-do-seu-artesanato.pdf?rlkey=ct77nw03oxvffowj1l05t0g67&e=2&st=dkn52t7u&dl=0" target="_blank" class="mt-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg no-underline"><i class="fa-solid fa-download mr-2"></i>Baixar</a>
+                        </div>
+                        <div class="bonus-card p-6 text-center flex flex-col justify-between">
+                            <i class="icon fa-solid fa-wifi text-purple-500 mx-auto mb-5"></i><h3 class="font-bold text-lg mb-4 text-gray-800">Vendas na Internet</h3>
+                            <a href="https://www.dropbox.com/scl/fi/5id0bv9585p1pfsj9bizg/venda-seu-artesanato-com-sucesso-na-internet.pdf?rlkey=8jt2e384a26p1jai0d3m397xm&e=2&st=sd918u8k&dl=0" target="_blank" class="mt-auto bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-lg no-underline"><i class="fa-solid fa-download mr-2"></i>Baixar</a>
+                        </div>
+                         <div class="bonus-card p-6 text-center flex flex-col justify-between">
+                            <i class="icon fa-solid fa-camera text-orange-500 mx-auto mb-5"></i><h3 class="font-bold text-lg mb-4 text-gray-800">Fotografando Produtos</h3>
+                            <a href="https://www.dropbox.com/scl/fi/moqxs59v1r2d3mxr6hni8/domine-a-fotografia-com-seu-celular.pdf?rlkey=ydmf6k26jcfr5y1xclhe9gkio&e=2&st=bdgzscrz&dl=0" target="_blank" class="mt-auto bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg no-underline"><i class="fa-solid fa-download mr-2"></i>Baixar</a>
+                        </div>
+                         <div class="bonus-card p-6 text-center flex flex-col justify-between">
+                            <i class="icon fa-solid fa-box-open text-red-500 mx-auto mb-5"></i><h3 class="font-bold text-lg mb-4 text-gray-800">Embalagens Criativas</h3>
+                            <a href="https://www.dropbox.com/scl/fi/myefzyggepsv4sgf9a6ml/ideias-de-embalagem-criativas.pdf?rlkey=m3g983fzu86191f3xum4jefei&e=2&st=9rbork04&dl=0" target="_blank" class="mt-auto bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg no-underline"><i class="fa-solid fa-download mr-2"></i>Baixar</a>
+                        </div>
+                         <div class="bonus-card p-6 text-center flex flex-col justify-between">
+                            <i class="icon fa-solid fa-store text-teal-500 mx-auto mb-5"></i><h3 class="font-bold text-lg mb-4 text-gray-800">Vendas em Feiras</h3>
+                            <a href="https://www.dropbox.com/scl/fi/ggq56s9v6dhuyjvhqomb2/como-vender-produtos-artesanais-em-feiras.pdf?rlkey=tznmsziws3swh9le39h5x2kw2&e=2&st=etsp2ohq&dl=0" target="_blank" class="mt-auto bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg no-underline"><i class="fa-solid fa-download mr-2"></i>Baixar</a>
+                        </div>
+                    </div></div></section>
+                    <section class="mt-20 max-w-2xl mx-auto reveal"><div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-6 rounded-lg shadow-lg"><p class="font-bold text-xl text-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i>ATENÇÃO!</p><p class="mt-2 text-center">SÓ REALIZE O PAGAMENTO EM NOSSO PIX OFICIAL DO MEU MARIDO</p><div class="mt-4 text-center bg-white p-4 rounded-lg"><p class="font-semibold">NOME: <span class="font-bold">João Vitor Antunes</span></p><p class="font-semibold mt-2">CHAVE PIX (CELULAR): <span class="font-bold">47 99609-8547</span></p></div></div></section>
+                </main>
+                <footer class="bg-purple-800 text-white text-center p-8 mt-16"><p>&copy; 2025 Curso de Bordado. Todos os direitos reservados.</p><p class="mt-2 text-purple-300">Transforme sua paixão em arte.</p></footer>
+            </div>`;
+    }
+
+    function renderModulosView() { return renderInicioView(); }
+
+    function renderAulasView(moduleId) {
+        const module = courseData.find(m => m.id === moduleId);
+        if (!module || module.type === 'pdf') return showView('inicio');
+        const lessonsHtml = module.lessons.map(lesson => {
+            const action = lesson.type === 'pdf_item' 
+                ? `window.open('${lesson.pdfUrl}', '_blank')`
+                : `showView('video', '${module.id}', ${lesson.id})`;
+            
+            const buttonText = lesson.type === 'pdf_item' ? 'Baixar PDF' : 'Assistir Aula';
+            const buttonIcon = lesson.type === 'pdf_item' ? 'fa-solid fa-file-pdf' : 'fa-solid fa-play';
+
+            return `<div class="lesson-card flex items-center justify-between reveal">
+                        <div class="flex items-center">
+                            <i onclick="toggleLessonStatus('${module.id}', ${lesson.id})" class="${lesson.completed ? 'fa-solid fa-circle-check text-green-500' : 'fa-regular fa-circle text-slate-300'} text-xl mr-4 cursor-pointer"></i>
+                            <span class="font-medium text-slate-700">${lesson.title}</span>
+                        </div>
+                        <a href="${action.startsWith('window') ? lesson.pdfUrl : 'javascript:void(0)'}" ${action.startsWith('window') ? 'target="_blank"' : `onclick="${action}"`} class="btn-purple text-xs font-bold py-2 px-3 rounded-lg no-underline"><i class="${buttonIcon} mr-2"></i>${buttonText}</a>
+                    </div>`;
+        }).join('');
+        
+        return `<div id="view-aulas" class="page-bg min-h-screen"><div class="container mx-auto px-4 py-8"><header class="text-left mb-8"><button onclick="showView('inicio')" class="text-purple-600 font-semibold mb-4 reveal"><i class="fa-solid fa-arrow-left mr-2"></i> Voltar</button><h1 class="text-3xl font-extrabold text-slate-800 reveal">${module.title}</h1></header><div class="space-y-3">${lessonsHtml}</div></div></div>`;
+    }
+    
+    function renderVideoView(moduleId, lessonId) {
+        const module = courseData.find(m => m.id === moduleId);
+        const lesson = module.lessons.find(l => l.id === lessonId);
+        const lessonIndex = module.lessons.findIndex(l => l.id === lessonId);
+        const prevLesson = lessonIndex > 0 ? module.lessons[lessonIndex - 1] : null;
+        const nextLesson = lessonIndex < module.lessons.length - 1 ? module.lessons[lessonIndex + 1] : null;
+        const allLessonsHtml = module.lessons.map(l => `<a href="javascript:void(0)" onclick="showView('video', '${module.id}', ${l.id})" class="${l.id === lessonId ? 'active-lesson' : ''}"><div class="flex items-center"><i class="${l.completed ? 'fa-solid fa-circle-check text-green-500' : 'fa-regular fa-circle text-slate-300'} text-xl mr-4"></i><span class="font-bold text-slate-800">${l.title}</span></div><span class="text-sm text-slate-500">${l.duration}</span></a>`).join('');
+        return `<div id="view-video" class="page-bg min-h-screen"><div class="container mx-auto px-4 py-8"><header class="mb-6 reveal"><button onclick="showView('aulas', '${moduleId}')" class="text-purple-600 font-semibold mb-4"><i class="fa-solid fa-arrow-left mr-2"></i> Voltar</button><h1 class="text-2xl font-extrabold text-slate-800">${lesson.title}</h1><p class="text-slate-500">Módulo: ${module.title}</p></header><div class="video-player-container reveal"><iframe src="https://www.youtube.com/embed/${lesson.videoId}" title="${lesson.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="mt-6 grid grid-cols-2 gap-4 reveal"><button onclick="showView('video', '${moduleId}', ${prevLesson?.id})" class="video-nav-button" ${!prevLesson ? 'disabled' : ''}><i class="fa-solid fa-chevron-left mr-2"></i>Anterior</button><button onclick="showView('video', '${moduleId}', ${nextLesson?.id})" class="video-nav-button text-right" ${!nextLesson ? 'disabled' : ''}>Próxima<i class="fa-solid fa-chevron-right ml-2"></i></button></div><div class="mt-4 reveal"><button onclick="toggleLessonStatus('${moduleId}', ${lessonId})" class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 ${lesson.completed ? 'btn-completed' : 'btn-purple'}">${lesson.completed ? '<i class="fa-solid fa-check mr-2"></i>Aula Concluída!' : '<i class="fa-regular fa-square-check mr-2"></i>Marcar como Concluída'}</button></div><div class="mt-12 reveal"><h3 class="text-xl font-bold mb-4">Aulas do Módulo</h3><div class="module-lessons-list">${allLessonsHtml}</div></div></div></div>`;
+    }
+
+    function renderPdfView(moduleId) {
+        const module = courseData.find(m => m.id === moduleId);
+        return `
+            <div id="view-pdf" class="page-bg min-h-screen">
+                <div class="container mx-auto px-4 py-8">
+                    <header class="text-left mb-8 reveal"><button onclick="showView('inicio')" class="text-purple-600 font-semibold mb-4"><i class="fa-solid fa-arrow-left mr-2"></i> Voltar</button><h1 class="text-3xl font-extrabold text-slate-800">${module.title}</h1></header>
+                    <div class="text-center bg-white p-8 rounded-2xl shadow-lg reveal">
+                        <i class="fa-solid fa-file-pdf text-purple-400 text-6xl mb-4"></i>
+                        <h2 class="text-2xl font-bold text-slate-800">Material para Download</h2>
+                        <p class="text-slate-500 mt-2 mb-6">Clique no botão abaixo para baixar o arquivo.</p>
+                        <a href="${module.pdfUrl}" target="_blank" class="btn-purple inline-block font-bold py-3 px-8 rounded-lg"><i class="fa-solid fa-download mr-2"></i>Baixar Guia (PDF)</a>
+                    </div>
+                    <div class="mt-6 reveal">
+                         <button onclick="togglePdfModuleStatus('${moduleId}')" class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 ${module.completed ? 'btn-completed' : 'btn-purple'}">
+                            ${module.completed ? '<i class="fa-solid fa-check mr-2"></i>Material Visto!' : '<i class="fa-regular fa-square-check mr-2"></i>Marcar como Visto'}
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    function renderProgressoView() {
+        let totalItems = 0, completedItems = 0, modulesCompleted = 0, modulesInProgress = 0, modulesNotStarted = 0;
+        courseData.forEach(m => {
+            if (m.type === 'pdf') { totalItems++; if (m.completed) completedItems++; } 
+            else { totalItems += m.lessons.length; completedItems += m.lessons.filter(l => l.completed).length; }
+            if(m.status === 'Concluído') modulesCompleted++; else if(m.status === 'Em Andamento') modulesInProgress++; else modulesNotStarted++;
+        });
+        const overallPercentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+        const moduleProgressHtml = courseData.map(module => `<div class="progress-card reveal"><div class="flex items-center space-x-4"><div class="w-16 h-16 rounded-xl flex items-center justify-center ${module.gradientClass}"><i class="${module.icon} text-3xl text-purple-600"></i></div><div><h3 class="font-bold text-slate-800">${module.title}</h3><p class="text-sm text-slate-500">${module.type === 'pdf' ? '1 Material' : module.lessons.length + ' aulas'}</p></div></div><div class="mt-4"><div class="flex justify-between items-center mb-1"><span class="text-sm font-medium text-slate-600">Progresso</span><span class="text-sm font-bold text-purple-600">${module.percentage}%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${module.percentage}%;"></div></div><p class="text-xs text-slate-500 mt-1">${module.type === 'pdf' ? (module.completed ? 'Material visto' : 'Pendente') : module.lessons.filter(l => l.completed).length + ' de ' + module.lessons.length + ' aulas concluídas'}</p></div></div>`).join('');
+        return `<div id="view-progresso" class="page-bg min-h-screen"><div class="px-4 py-8"><header class="text-left mb-8"><h1 class="text-4xl font-extrabold text-slate-800 reveal">Seu Progresso</h1></header><div class="space-y-6"><div class="progress-card reveal"><h2 class="text-lg font-bold text-slate-700">Progresso Geral</h2><p class="text-sm text-slate-500 mb-4">Acompanhe seu desenvolvimento</p><div class="flex justify-between items-center mb-1"><span class="text-sm font-medium text-slate-600">Progresso Total</span><span class="text-sm font-bold text-purple-600">${overallPercentage}%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${overallPercentage}%;"></div></div><div class="grid grid-cols-2 gap-x-6 gap-y-4 mt-6 text-center"><div><p class="text-2xl font-bold text-slate-800">${modulesCompleted}</p><p class="text-xs text-slate-500">Concluídos</p></div><div><p class="text-2xl font-bold text-slate-800">${modulesInProgress}</p><p class="text-xs text-slate-500">Em Andamento</p></div><div><p class="text-2xl font-bold text-slate-800">${modulesNotStarted}</p><p class="text-xs text-slate-500">Não Iniciados</p></div><div><p class="text-2xl font-bold text-slate-800">${totalItems}</p><p class="text-xs text-slate-500">Total de Itens</p></div></div></div>${moduleProgressHtml}</div></div></div>`;
+    }
+
+    /** Gerenciador de Views: Decide qual "página" mostrar. */
+    function showView(viewId, param1, param2) {
+        let viewHtml = '';
+        if (viewId === 'inicio' || viewId === 'modulos') viewHtml = renderInicioView();
+        else if (viewId === 'progresso') viewHtml = renderProgressoView();
+        else if (viewId === 'aulas') viewHtml = renderAulasView(param1);
+        else if (viewId === 'video') viewHtml = renderVideoView(param1, param2);
+        else if (viewId === 'pdf') viewHtml = renderPdfView(param1);
+        else viewHtml = '<div>Página não encontrada</div>';
+        
+        appContainer.innerHTML = viewHtml;
+        appContainer.querySelectorAll('.reveal').forEach(el => { el.classList.remove('visible'); setTimeout(() => el.classList.add('visible'), 10); });
+        
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        let activeLinkQuery;
+        if (viewId === 'inicio' || viewId === 'modulos' || viewId === 'aulas' || viewId === 'pdf' || viewId === 'video') {
+             activeLinkQuery = `[onclick="showView('inicio')"]`;
+             const modulosLink = document.querySelector(`[onclick="showView('modulos')"]`);
+             if(modulosLink) modulosLink.classList.add('active');
+        } else if (viewId === 'progresso') {
+             activeLinkQuery = `[onclick="showView('progresso')"]`;
+        }
+        
+        const activeLink = document.querySelector(`.nav-link${activeLinkQuery}`);
+        if(activeLink) activeLink.classList.add('active');
+
+
+        if (viewId === 'modulos') setTimeout(() => document.getElementById('modulos')?.scrollIntoView({ behavior: 'smooth' }), 100);
+        else window.scrollTo(0, 0);
+    }
+    
+    // =================================================================
+    // INICIALIZAÇÃO DA APLICAÇÃO
+    // =================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedData = localStorage.getItem('courseProgressV6');
+        courseData = savedData ? JSON.parse(savedData) : initialCourseData;
+        
+        updateProgress();
+        showView('inicio');
+    });
+    </script>
+</body>
+</html>
